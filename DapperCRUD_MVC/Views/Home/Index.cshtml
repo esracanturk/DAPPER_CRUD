@@ -1,0 +1,175 @@
+﻿@model List<DapperCRUD_MVC.Models.GelenData>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <title>Document</title>
+
+        <style>
+            input[type=text], select {
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+            input[type=submit] {
+                width: 100%;
+                background-color: #4CAF50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            input[type=button]:hover {
+                background-color: #45a049;
+            }
+
+            div {
+                border-radius: 5px;
+                background-color: #f2f2f2;
+                padding: 20px;
+            }
+
+            #tableList {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <table id="tableList" border="1">
+            <tr>
+                
+            </tr>
+            <tr>
+                <td><b>Product ID</b></td>
+                <td><b>Name</b></td>
+                <td><b>Quantity</b></td>
+                <td><b>Price</b></td>
+            </tr>
+        </table>
+        <div>
+                <label for="fname">ID</label>
+                <input type="text" id="IdId" name="id" placeholder="ID">
+
+                <label for="fname">Name</label>
+                <input type="text" id="IdName" name="name" placeholder="Name">
+
+                <label for="lname">Quantity</label>
+                <input type="text" id="IdQuantity" name="quantity" placeholder=" Quantity">
+
+                <label for="lname">Price</label>
+                <input type="text" id="IdPrice" name="price" placeholder="Price">
+
+                <input type="submit" value="EKLE" class="ekle" id="ekle">
+                <input type="submit" value="SİL" class="sil" id="sil">
+                <input type="button" value="GÖRÜNTÜLE" class="goruntule" id="goruntule">
+        </div>
+        <script>
+            var name = quantity = price = resId = "";
+
+            $(document).ready(function () {
+                $("#ekle").click(function () {
+                    alert("Value: " + $("#IdName").val());
+                    name = $("#IdName").val();
+                    $("#IdName").val("");
+                    $("#IdQuantity").val("");
+                    $("#IdPrice").val("");
+                    quantity = $("#IdQuantity").val();
+                    price = $("#IdPrice").val();
+                    console.log(name);
+                    console.log(quantity);
+                    console.log(price);
+
+                    $.ajax({
+                        url: 'home/Ekle',
+                        type: 'GET',
+                        data: { i: name, j: quantity, p: price },
+                        success: function (response) {
+                            $('.submit').html(response);
+                            console.log("olduuu")
+
+                        },
+                        error: function (response) {
+                            //debugger;
+                            console.log(response)
+                            console.log("olmazzzz")
+                        }
+                    },
+                    )
+                });
+
+                $("#sil").click(function () {
+                    //alert("Value: " + $("#txt2").val());
+                    alert("Value: " + $("#IdId").val());
+                    resId = $("#IdId").val();
+                    $("#IdName").val("");
+                    $("#IdQuantity").val("");
+                    $("#IdPrice").val("");
+                    console.log(name);
+
+                    $.ajax({
+                        url: 'home/Sil',
+                        type: 'GET',
+                        data: { i: resId },
+                        success: function (response) {
+                            $('.sil').html(response);
+                            console.log("olduuu")
+                        },
+                        error: function (response) {
+                            console.log(response)
+                            console.log("olmazzzz")
+                        }
+                    },
+                    )
+                });
+            });
+
+
+            $("#goruntule").click(function () {
+
+                $("#tableList").html("");
+
+                $.ajax({
+                    url: 'Home/Goruntule',
+                    type: 'GET',
+                    async: false,
+                    success: function (response) {
+                        debugger;
+
+                        var html = "";
+                        $("table").append("<th>NAME </th>");
+                        $("table").append("<th>PRICE </th>");
+                        $("table").append("<th>PRODUCTID </th>");
+                        $("table").append("<th>QUANTITY </th>");
+                        //$("table").prepend("<th>Products Database</th>");
+
+                        response.forEach(element =>
+                            html += "<tr><td>" + element.name + "</td>" + "<td>" + element.price + "</td>" + "<td>" + element.productId + "</td>" + "<td>" + element.quantity + "</td></tr>"
+                        );
+
+                        $("#tableList").append(html);
+                        $("#tableList").css("display", "block");
+
+                    },
+                    error: function (response) {
+                        debugger;
+                        console.log(response)
+                        console.log("olmazzzz")
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
